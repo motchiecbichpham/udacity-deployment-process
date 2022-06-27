@@ -1,0 +1,83 @@
+version: 2.1
+orbs:
+  # orgs contain basc recipes and reproducible actions (install node, aws, etc.)
+  node: circleci/node@5.0.2
+  eb: circleci/aws-elastic-beanstalk@2.0.1
+  aws-cli: circleci/aws-cli@3.1.1
+  # different jobs are calles later in the workflows sections
+jobs:
+  # API Build and Deploy
+  api-build-deploy:
+    docker:
+      # the base image can run most needed actions with orbs
+      - image: "cimg/base:stable"
+    steps:
+      - checkout
+      - node/install:
+          node-version: '14.15.1'
+      - aws-cli/install
+      - eb/setup
+      # install dependencies
+      - run:
+          name: Install API Dependencies
+          command: |
+            cd udagram 
+      # Build
+      - run:
+          name: API Build
+          command: |
+            cd udagram
+      # Deploy
+      - run:
+          name: Deploy API
+          command: |
+            cd udagram 
+  # Frontend Build and Deploy
+  frontend-build-deploy:
+    docker:
+      # the base image can run most needed actions with orbs
+      - image: "cimg/base:stable"
+    steps:
+      - checkout
+      - node/install:
+          node-version: '14.15.1'
+      - aws-cli/install
+      # install dependencies
+      - run:
+          name: Angular CLI Dependencies
+          command: |
+            npm i -g @angular/cli      
+      - run:
+          name: Install Frontend Dependencies
+          command: |
+            cd udagram && npm run frontend:install
+      # Lint
+      - run:
+          name: Frontend Lint
+          command: |
+            cd udagram && npm run frontend:lint
+      # Build
+      - run:
+          name: Frontend Build
+          command: |
+            cd udagram && npm run frontend:build
+      # Deploy
+      - run:
+          name: Deploy Frontend
+          command: |
+            cd udagram 
+# Workflow only runs matster branch. API must complete before Frontend
+workflows:
+  udagram:
+    jobs:
+      - frontend-build-deploy:
+          requires:
+            - api-build-deploy
+          filters: # Only master branch
+            branches:
+              only: /^master/
+      - api-build-deploy:
+          filters: # Only master branch
+            branches:
+              only: /^master/
+      
