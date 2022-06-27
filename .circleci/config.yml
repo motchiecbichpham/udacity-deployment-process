@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Deploy API
           command: |
-            cd udagram 
+            cd udagram && npm run api:deploy
   # Frontend Build and Deploy
   frontend-build-deploy:
     docker:
