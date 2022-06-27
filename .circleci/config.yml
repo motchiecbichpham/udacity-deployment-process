@@ -1,83 +1,26 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-orbs:
-  # orgs contain basc recipes and reproducible actions (install node, aws, etc.)
-  node: circleci/node@5.0.2
-  eb: circleci/aws-elastic-beanstalk@2.0.1
-  aws-cli: circleci/aws-cli@3.1.1
-  # different jobs are calles later in the workflows sections
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  # API Build and Deploy
-  api-build-deploy:
+  say-hello:
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
-      # the base image can run most needed actions with orbs
-      - image: "cimg/base:stable"
+      - image: cimg/base:stable
+    # Add steps to the job
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
-      - node/install:
-          node-version: '14.15.1'
-      - aws-cli/install
-      - eb/setup
-      # install dependencies
       - run:
-          name: Install API Dependencies
-          command: |
-            cd udagram 
-      # Build
-      - run:
-          name: API Build
-          command: |
-            cd udagram
-      # Deploy
-      - run:
-          name: Deploy API
-          command: |
-            cd udagram 
-  # Frontend Build and Deploy
-  frontend-build-deploy:
-    docker:
-      # the base image can run most needed actions with orbs
-      - image: "cimg/base:stable"
-    steps:
-      - checkout
-      - node/install:
-          node-version: '14.15.1'
-      - aws-cli/install
-      # install dependencies
-      - run:
-          name: Angular CLI Dependencies
-          command: |
-            npm i -g @angular/cli      
-      - run:
-          name: Install Frontend Dependencies
-          command: |
-            cd udagram && npm run frontend:install
-      # Lint
-      - run:
-          name: Frontend Lint
-          command: |
-            cd udagram && npm run frontend:lint
-      # Build
-      - run:
-          name: Frontend Build
-          command: |
-            cd udagram && npm run frontend:build
-      # Deploy
-      - run:
-          name: Deploy Frontend
-          command: |
-            cd udagram 
-# Workflow only runs matster branch. API must complete before Frontend
+          name: "Say hello"
+          command: "echo Hello, World!"
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  udagram:
+  say-hello-workflow:
     jobs:
-      - frontend-build-deploy:
-          requires:
-            - api-build-deploy
-          filters: # Only master branch
-            branches:
-              only: /^master/
-      - api-build-deploy:
-          filters: # Only master branch
-            branches:
-              only: /^master/
-      
+      - say-hello
