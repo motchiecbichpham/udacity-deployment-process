@@ -8,4 +8,4 @@ export AWS_BUCKET=arn:aws:s3:::motchiecbichpham
 export AWS_REGION=us-east-1
 export AWS_PROFILE=default
 export JWT_SECRET=mysecretstring
-export URL=http://ud-env.eba-2kmcb5fu.us-east-1.elasticbeanstalk.com/
+export URL=http://ud-env-prod.eba-2kmcb5fu.us-east-1.elasticbeanstalk.com/

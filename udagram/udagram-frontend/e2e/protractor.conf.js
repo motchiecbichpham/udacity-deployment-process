@@ -10,7 +10,7 @@ exports.config = {
     browserName: "chrome",
   },
   directConnect: true,
-  baseUrl: "http://ud-env.eba-2kmcb5fu.us-east-1.elasticbeanstalk.com/",
+  baseUrl: "http://ud-env-prod.eba-2kmcb5fu.us-east-1.elasticbeanstalk.com/",
   framework: "jasmine",
   jasmineNodeOpts: {
     showColors: true,
