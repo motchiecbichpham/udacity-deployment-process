@@ -60,7 +60,7 @@ jobs:
       - run:
           name: Deploy Frontend
           command: |
-            cd udagram 
+            cd udagram && npm run frontend:deploy
 # Workflow only runs matster branch. API must complete before Frontend
 workflows:
   udagram:
